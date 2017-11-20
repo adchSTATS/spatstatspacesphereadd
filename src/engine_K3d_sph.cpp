@@ -14,6 +14,8 @@ using namespace Rcpp;
 //' @param Dmat Matrix of all possible values to sum over to.
 //' The values of the K-function before multiplying by the indicator function.
 //' Constants may be multiplied on the resulting matrix.
+//' @useDynLib spatstatspacesphereadd, .registration = TRUE
+//' @importFrom Rcpp sourceCpp
 // [[Rcpp::export]]
 NumericMatrix engine_K3d_sph(NumericVector r, NumericVector s, 
                              NumericVector x_vec, NumericVector y_vec, NumericVector z_vec, 
