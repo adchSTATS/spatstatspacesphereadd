@@ -1,0 +1,18 @@
+Package: spatstatspacesphereadd
+Type: Package
+Title: Additions to spatstat
+Version: 0.1.0
+Authors@R: person("Andreas", "Christoffersen", email = "andreas@math.aau.dk", role = c("aut", "cre"))
+Description: Addition to spatstat with functions for analysing point patterns on the productspace of R^d and S^k.
+License: GPL (>= 2)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+Remotes: adchSTATS/spatstatsphadd, 
+         adchSTATS/spatstat3dadd
+Imports: spatstat,
+         spherstat,
+         spatstatsphadd,
+         spatstat3dadd,
+         Rcpp
+LinkingTo: Rcpp
