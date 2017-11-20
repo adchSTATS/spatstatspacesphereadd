@@ -14,7 +14,7 @@ using namespace Rcpp;
 //' @useDynLib spatstatspacesphereadd, .registration = TRUE
 //' @importFrom Rcpp sourceCpp
 // [[Rcpp::export]]
-NumericMatrix engine_k3s(NumericVector r, NumericVector s, NumericMatrix dists_3d, NumericMatrix dists_sph, NumericMatrix Dmat) {
+NumericMatrix engine_K(NumericVector r, NumericVector s, NumericMatrix dists_3d, NumericMatrix dists_sph, NumericMatrix Dmat) {
   int nrow_out = r.size();
   int ncol_out = s.size();
   int np = dists_3d.nrow();

@@ -67,37 +67,52 @@ K3dsph <- function(X, Y,
   win_area_sph <- 4 * pi
   np <- npoints(X)
 
-  if (is.null(intenssX)) {
-    intenssX_mat <- matrix(rep(np * (np - 1) / volume(X$domain)^2, np^2), ncol = np)
-  } else if (is.vector(intenssX)) {
-    stopifnot(is.numeric(intenssX))
-    intenssX_mat <- tcrossprod(intenssX)
-  } else if (is.matrix(intenssX)) {
-    stopifnot(is.numeric(intenssX))
-    intenssX_mat <- intenssX
-  } else if (is.function(intenssX)) {
-    intenssX_mat <- tcrossprod(apply(data.frame(X$data$x, X$data$y, X$data$z),
-                                     MARGIN = 1,
-                                     FUN = function(x) do.call(intenssX, c(list(x), parmsX))))
-  }
+  intenssX_mat <- switch(class(intenssX),
+                         "NULL" = {
+                           matrix(rep(np * (np - 1) / volume(X$domain)^2, np^2), ncol = np)
+                         },
+                         numeric = {
+                           stopifnot(length(intenssX) == np)
+                           tcrossprod(intenssX)
+                         },
+                         matrix = {
+                           stopifnot(is.numeric(intenssX))
+                           stopifnot(all(c(np, np) == dim(intenssX)))
+                           intenssX
+                         },
+                         "function" = {
+                           tcrossprod(apply(data.frame(X$data$x, X$data$y, X$data$z),
+                                            MARGIN = 1,
+                                            FUN = function(x) do.call(intenssX, c(list(x), parmsX))))
+                         },
+                         {
+                           stop("intenssX should be either NULL, a vector, a matrix, or a function.")
+                         })
 
-  if (is.null(intenssY)) {
-    intenssY_mat <- matrix(rep(np * (np - 1) / win_area_sph^2, np^2), ncol = np)
-  } else if (is.vector(intenssY)) {
-    stopifnot(is.numeric(intenssY))
-    intenssY_mat <- tcrossprod(intenssY)
-  } else if (is.matrix(intenssY)) {
-    stopifnot(is.numeric(intenssY))
-    stopifnot(all(c(np, np) == dim(intenssY)))
-    intenssY_mat <- intenssY
-  } else if (is.function(intenssY)) {
-    intenssY_mat <- tcrossprod(apply(data.frame(Y$data$long, Y$data$lat),
-                                     MARGIN = 1,
-                                     FUN = function(x) do.call(intenssY, c(list(x), parmsY))))
-  }
+  intenssY_mat <- switch(class(intenssY), 
+                         "NULL" = {
+                           matrix(rep(np * (np - 1) / win_area_sph^2, np^2), ncol = np)
+                         },
+                         numeric = {
+                           stopifnot(length(intenssY) == np)
+                           tcrossprod(intenssY)
+                         },
+                         matrix = {
+                           stopifnot(is.numeric(intenssY))
+                           stopifnot(all(c(np, np) == dim(intenssY)))
+                           intenssY
+                         },
+                         "function" = {
+                           tcrossprod(apply(data.frame(Y$data$long, Y$data$lat),
+                                            MARGIN = 1,
+                                            FUN = function(x) do.call(intenssY, c(list(x), parmsY))))
+                         },
+                         {
+                           stop("intenssY should be either NULL, a vector, a matrix, or a function.")
+                         })
 
   tmp_mat <- edge_factors_3d / (intenssX_mat * intenssY_mat / np^2)
-  K <- engine_k3s(r_vec, s_vec, dists_3d, dists_sph, tmp_mat) / win_area_sph
+  K <- engine_K(r_vec, s_vec, dists_3d, dists_sph, tmp_mat) / win_area_sph
   out$K3dsph <- K
 
   out
