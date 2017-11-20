@@ -12,7 +12,7 @@
 #' The values of the K-function before multiplying by the indicator function.
 #' Constants may be multiplied on the resulting matrix.
 engine_K <- function(r, s, dists_3d, dists_sph, Dmat) {
-    .Call(`_spatstatspacesphereadd_engine_K`, r, s, dists_3d, dists_sph, Dmat)
+    .Call('_spatstatspacesphereadd_engine_K', PACKAGE = 'spatstatspacesphereadd', r, s, dists_3d, dists_sph, Dmat)
 }
 
 #' Engine for computing K-function
@@ -27,7 +27,7 @@ engine_K <- function(r, s, dists_3d, dists_sph, Dmat) {
 #' @param Dmat Matrix of all possible values to sum over to.
 #' The values of the K-function before multiplying by the indicator function.
 #' Constants may be multiplied on the resulting matrix.
-engine_K3d <- function(r, s, x_vec, y_vec, z_vec, dists_sph, Dmat) {
-    .Call(`_spatstatspacesphereadd_engine_K3d`, r, s, x_vec, y_vec, z_vec, dists_sph, Dmat)
+engine_K3d_sph <- function(r, s, x_vec, y_vec, z_vec, dists_sph, Dmat) {
+    .Call('_spatstatspacesphereadd_engine_K3d_sph', PACKAGE = 'spatstatspacesphereadd', r, s, x_vec, y_vec, z_vec, dists_sph, Dmat)
 }
 

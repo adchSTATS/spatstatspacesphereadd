@@ -38,7 +38,7 @@ K3dsph <- function(X, Y,
   stopifnot(inherits(X, "pp3"))
   stopifnot(inherits(Y, "pps"))
   stopifnot(npoints(X) == npoints(Y))
-
+  
   if (is.null(r)) {
     if (is.null(rmax)) {
       rmax <- diameter(X$domain) / 2
@@ -57,18 +57,17 @@ K3dsph <- function(X, Y,
     stopifnot(is.vector(s))
     s_vec <- s
   }
-
+  
   out <- list(r = r_vec,
               s = s_vec,
               theo = outer(r_vec, s_vec, function(r, s) r^3 * pi^3 / (gamma(5/2) * gamma(3/2)) * (1 - cos(s))))
-
-  dists_3d <- pairdist(X)
+  
   dists_sph <- pairdistsph(pps2sp2(Y))
-
+  
   edge_factors_3d <- edge.Trans.pp3(X)
   win_area_sph <- 4 * pi
   np <- npoints(X)
-
+  
   intenssX_mat <- switch(class(intenssX),
                          "NULL" = {
                            matrix(rep(np * (np - 1) / volume(X$domain)^2, np^2), ncol = np)
@@ -90,7 +89,7 @@ K3dsph <- function(X, Y,
                          {
                            stop("intenssX should be either NULL, a vector, a matrix, or a function.")
                          })
-
+  
   intenssY_mat <- switch(class(intenssY), 
                          "NULL" = {
                            matrix(rep(np * (np - 1) / win_area_sph^2, np^2), ncol = np)
@@ -112,10 +111,13 @@ K3dsph <- function(X, Y,
                          {
                            stop("intenssY should be either NULL, a vector, a matrix, or a function.")
                          })
-
+  
   tmp_mat <- edge_factors_3d / (intenssX_mat * intenssY_mat / np^2)
-  K <- engine_K(r_vec, s_vec, dists_3d, dists_sph, tmp_mat) / win_area_sph
-  out$K3dsph <- K
-
+  K <- engine_K3d_sph(r = r_vec, s = s_vec, 
+                      x_vec = X$data$x, y_vec = X$data$y, z_vec = X$data$z, 
+                      dists_sph = dists_sph,
+                      Dmat = tmp_mat) 
+  out$K3dsph <- K / win_area_sph
+  
   out
 }
