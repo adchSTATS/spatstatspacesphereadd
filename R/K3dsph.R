@@ -29,8 +29,8 @@
 #' \code{theo} is the theoretical space-sphere K-function under Stationary Poisson.
 #' \code{theo} and \code{K3dsph} are matrices with \code{length(r)} rows and \code{length(s)} columns.
 #' @import spatstat spherstat spatstatsphadd spatstat3dadd
-#' @useDynLib spatstatspacesphereadd, .registration = TRUE
-#' @importFrom Rcpp sourceCpp
+# @useDynLib spatstatspacesphereadd, .registration = TRUE
+# @importFrom Rcpp sourceCpp
 #' @export
 K3dsph <- function(X, Y,
                    r = NULL, s = NULL, rmax = NULL, smax = NULL, nrval = 128, nsval = nrval,
