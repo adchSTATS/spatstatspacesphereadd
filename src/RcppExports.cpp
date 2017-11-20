@@ -20,9 +20,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// engine_K3d
+NumericMatrix engine_K3d(NumericVector r, NumericVector s, NumericMatrix x_vec, NumericMatrix y_vec, NumericMatrix z_vec, NumericMatrix dists_sph, NumericMatrix Dmat);
+RcppExport SEXP _spatstatspacesphereadd_engine_K3d(SEXP rSEXP, SEXP sSEXP, SEXP x_vecSEXP, SEXP y_vecSEXP, SEXP z_vecSEXP, SEXP dists_sphSEXP, SEXP DmatSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type r(rSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type s(sSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type x_vec(x_vecSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type y_vec(y_vecSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type z_vec(z_vecSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type dists_sph(dists_sphSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type Dmat(DmatSEXP);
+    rcpp_result_gen = Rcpp::wrap(engine_K3d(r, s, x_vec, y_vec, z_vec, dists_sph, Dmat));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_spatstatspacesphereadd_engine_K", (DL_FUNC) &_spatstatspacesphereadd_engine_K, 5},
+    {"_spatstatspacesphereadd_engine_K3d", (DL_FUNC) &_spatstatspacesphereadd_engine_K3d, 7},
     {NULL, NULL, 0}
 };
 

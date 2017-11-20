@@ -15,3 +15,19 @@ engine_K <- function(r, s, dists_3d, dists_sph, Dmat) {
     .Call(`_spatstatspacesphereadd_engine_K`, r, s, dists_3d, dists_sph, Dmat)
 }
 
+#' Engine for computing K-function
+#'
+#' Engine for calculating K-function of point processes on the product space of R^3 and S^2.
+#' @param r Vector of values for the argument r at which K(r, s) should be evaluated.
+#' @param s Vector of values for the argument s at which K(r, s) should be evaluated.
+#' @param x_vec Vector of x coordinates.
+#' @param y_vec Vector of y coordinates.
+#' @param z_vec Vector of z coordinates.
+#' @param dists_sph Matrix of distances between points on S^2.
+#' @param Dmat Matrix of all possible values to sum over to.
+#' The values of the K-function before multiplying by the indicator function.
+#' Constants may be multiplied on the resulting matrix.
+engine_K3d <- function(r, s, x_vec, y_vec, z_vec, dists_sph, Dmat) {
+    .Call(`_spatstatspacesphereadd_engine_K3d`, r, s, x_vec, y_vec, z_vec, dists_sph, Dmat)
+}
+
