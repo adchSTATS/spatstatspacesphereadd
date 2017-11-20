@@ -19,24 +19,42 @@ NumericMatrix engine_K(NumericVector r, NumericVector s, NumericMatrix dists_3d,
   double dist_3d;
   double dist_sph;
   NumericMatrix mat_out(nrow_out, ncol_out);
-  /* For each combination of r and s calculate the K-function */
-  for(int ridx = 0; ridx < nrow_out; ridx++) {
-    for(int sidx = 0; sidx < ncol_out; sidx++) {
-      double val = 0;
-      /* Extract distances */
-      for(int i = 0; i < (np-1); i++) {
-        for(int j = i+1; j < np; j++) {
-          dist_3d = dists_3d(i, j);
-          dist_sph = dists_sph(i, j);
-          /* If condition is satisfied add to sum */
-          if((dist_3d <= r[ridx]) & (dist_sph <= s[sidx])) {
-            val += Dmat(i, j);
+  // /* For each combination of r and s calculate the K-function */
+  // for(int ridx = 0; ridx < nrow_out; ridx++) {
+  //   for(int sidx = 0; sidx < ncol_out; sidx++) {
+  //     double val = 0;
+  //     /* Extract distances */
+  //     for(int i = 0; i < (np-1); i++) {
+  //       for(int j = i+1; j < np; j++) {
+  //         dist_3d = dists_3d(i, j);
+  //         dist_sph = dists_sph(i, j);
+  //         /* If condition is satisfied add to sum */
+  //         if((dist_3d <= r[ridx]) & (dist_sph <= s[sidx])) {
+  //           val += Dmat(i, j);
+  //         }
+  //       }
+  //     }
+  //     /* 2 because they are ordered pairs */
+  //     mat_out(ridx, sidx) = 2*val;
+  //   }
+  // }
+  
+  for(int i = 0; i < (np-1); i++) {
+    for(int j = i+1; j < np; j++) {
+      dist_3d = dists_3d(i, j);
+      dist_sph = dists_sph(i, j);
+      for(int ridx = 0; ridx < nrow_out; ridx++) {
+        if(dist_3d <= r[ridx]) {
+          for(int sidx = 0; sidx < ncol_out; sidx++) {
+            if(dist_sph <= s[sidx]) {
+              mat_out(ridx, sidx) += 2*Dmat(i, j);
+            }
           }
         }
       }
-      /* 2 because they are ordered pairs */
-      mat_out(ridx, sidx) = 2*val;
     }
   }
+  
+  
   return mat_out;
 }
