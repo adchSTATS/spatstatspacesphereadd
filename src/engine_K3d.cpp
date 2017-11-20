@@ -47,7 +47,5 @@ NumericMatrix engine_K3d(NumericVector r, NumericVector s, NumericMatrix x_vec, 
       }
     }
   }
-  
-  
   return mat_out;
 }
