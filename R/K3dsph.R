@@ -117,5 +117,5 @@ K3dsph <- function(X, Y,
                       Dmat = tmp_mat) 
   out$K3dsph <- K / win_area_sph
   
-  out
+  return(out)
 }

@@ -38,5 +38,5 @@ NumericMatrix engine_K(NumericVector r, NumericVector s, NumericMatrix dists_3d,
       mat_out(ridx, sidx) = 2*val;
     }
   }
-  return mat_out;
+  return(mat_out);
 }

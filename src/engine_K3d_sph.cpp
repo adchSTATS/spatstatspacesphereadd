@@ -56,5 +56,5 @@ NumericMatrix engine_K3d_sph(NumericVector r, NumericVector s,
       }
     }
   }
-  return mat_out;
+  return(mat_out);
 }

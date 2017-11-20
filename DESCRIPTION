@@ -13,6 +13,6 @@ Remotes: adchSTATS/spatstatsphadd,
 Imports: spatstat,
          spherstat,
          spatstatsphadd,
-         spatstat3dadd
-Depends: Rcpp
+         spatstat3dadd,
+         Rcpp
 LinkingTo: Rcpp
