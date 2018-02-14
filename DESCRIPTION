@@ -9,10 +9,12 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 Remotes: adchSTATS/spatstatsphadd, 
-         adchSTATS/spatstat3dadd
+         adchSTATS/spatstat3dadd,
+         adchSTATS/spatstatciradd
 Imports: spatstat,
          spherstat,
          spatstatsphadd,
          spatstat3dadd,
+         spatstatciradd,
          Rcpp
 LinkingTo: Rcpp

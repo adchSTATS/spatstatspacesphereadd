@@ -28,11 +28,11 @@
 #' @return A list containing \code{r}, \code{s}, \code{theo}, and \code{K3dsph}.
 #' \code{theo} is the theoretical space-sphere K-function under Stationary Poisson.
 #' \code{theo} and \code{K3dsph} are matrices with \code{length(r)} rows and \code{length(s)} columns.
-#' @import spatstat spherstat spatstatsphadd spatstat3dadd
+#' @import spatstat spherstat spatstatsphadd spatstat3dadd spatstatciradd
 #' @export
-K3dsph <- function(X, Y,
-                   r = NULL, s = NULL, rmax = NULL, smax = NULL, nrval = 128, nsval = nrval,
-                   intenssX = NULL, intenssY = NULL, parmsX, parmsY) {
+K3dsph2 <- function(X, Y,
+                    r = NULL, s = NULL, rmax = NULL, smax = NULL, nrval = 128, nsval = nrval,
+                    intenssX = NULL, intenssY = NULL, parmsX, parmsY) {
   stopifnot(inherits(X, "pp3"))
   stopifnot(inherits(Y, "pps") || inherits(Y, "ppc"))
   stopifnot(npoints(X) == npoints(Y))
