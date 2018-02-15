@@ -64,7 +64,8 @@ K3dsph2 <- function(X, Y,
                 }))
     
     angs <- Y$data$angs
-    dists_sph <- abs(abs(outer(X = angs, Y = angs, FUN = "-")) %% (-pi))
+    dists_tmp <- abs(outer(X = angs, Y = angs, FUN = "-"))
+    dists_sph <- ifelse(dists_tmp > pi, 2 * pi - dists_tmp, dists_tmp)
     
     win_area_sph <- 2 * pi
   } else if (inherits(Y, "pps")) {
