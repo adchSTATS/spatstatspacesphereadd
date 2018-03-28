@@ -1,8 +1,9 @@
 #' K-function
 #'
-#' Estimates the space-sphere K-function from a point pattern with points in \code{R^3 x S^2}
-#' in a window of arbitry shape in space and on the entire sphere.
-#' @param X Point pattern of class \code{\link{pp3}}.
+#' Estimates the space-sphere K-function from a point pattern with points in \code{R^2 x S^1}, 
+#' \code{R^2 x S^2}, \code{R^3 x S^1}, or \code{R^3 x S^2}
+#' in a window of arbitry shape in space and on the entire "sphere".
+#' @param X Point pattern of class \code{\link{ppp}} or \code{\link{pp3}}.
 #' @param Y Point pattern of class \code{\link{ppc}} or \code{\link{pps}}.
 #' @param r Optional. Vector of values for the argument r at which K(r, s) should be evaluated.
 #' @param s Optional. Vector of values for the argument s at which K(r, s) should be evaluated.
@@ -28,18 +29,27 @@
 #' @return A list containing \code{r}, \code{s}, \code{theo}, and \code{K3dsph}.
 #' \code{theo} is the theoretical space-sphere K-function under Stationary Poisson.
 #' \code{theo} and \code{K3dsph} are matrices with \code{length(r)} rows and \code{length(s)} columns.
+#' @example /inst/Examples/spacesphereKfunction.R
 #' @import spatstat spherstat spatstatsphadd spatstat3dadd spatstatciradd
 #' @export
-K3dsph2 <- function(X, Y,
-                    r = NULL, s = NULL, rmax = NULL, smax = NULL, nrval = 128, nsval = nrval,
-                    intenssX = NULL, intenssY = NULL, parmsX, parmsY) {
-  stopifnot(inherits(X, "pp3"))
+Kspacesph <- function(X, Y,
+                   r = NULL, s = NULL, rmax = NULL, smax = NULL, nrval = 128, nsval = nrval,
+                   intenssX = NULL, intenssY = NULL, parmsX, parmsY) {
+  stopifnot(inherits(X, "pp3") || inherits(X, "ppp"))
   stopifnot(inherits(Y, "pps") || inherits(Y, "ppc"))
-  stopifnot(npoints(X) == npoints(Y))
+  
+  np <- npoints(X)
+  stopifnot(np == npoints(Y))
+  
+  if (inherits(X, "ppp")) {
+    dom <- X$window
+  } else if (inherits(X, "pp3")) {
+    dom <- X$domain
+  }
   
   if (is.null(r)) {
     if (is.null(rmax)) {
-      rmax <- diameter(X$domain) / 2
+      rmax <- diameter(dom) / 2
     }
     r_vec <- seq(from = 0, to = rmax, length.out = nrval)
   } else {
@@ -78,12 +88,15 @@ K3dsph2 <- function(X, Y,
     win_area_sph <- 4 * pi
   }
   
-  edge_factors_3d <- edge.Trans.pp3(X)
-  np <- npoints(X)
+  if (inherits(X, "ppp")) {
+    edge_factors <- edge.Trans(X)
+  } else if (inherits(X, "pp3")) {
+    edge_factors <- edge.Trans.pp3(X)
+  }
   
   intenssX_mat <- switch(class(intenssX),
                          "NULL" = {
-                           matrix(rep(np * (np - 1) / volume(X$domain)^2, np^2), ncol = np)
+                           matrix(rep(np * (np - 1) / volume(dom)^2, np^2), ncol = np)
                          },
                          numeric = {
                            stopifnot(length(intenssX) == np)
@@ -125,12 +138,20 @@ K3dsph2 <- function(X, Y,
                            stop("intenssY should be either NULL, a vector, a matrix, or a function.")
                          })
   
-  tmp_mat <- edge_factors_3d / (intenssX_mat * intenssY_mat / np^2)
-  K <- engine_K3d_sph(r = r_vec, s = s_vec, 
-                      x_vec = X$data$x, y_vec = X$data$y, z_vec = X$data$z, 
-                      dists_sph = dists_sph,
-                      Dmat = tmp_mat) 
-  out$K3dsph <- K / win_area_sph
+  tmp_mat <- edge_factors / (intenssX_mat * intenssY_mat / np^2)
+  
+  if (inherits(X, "ppp")) {
+    K <- engine_K2d_sph(r = r_vec, s = s_vec, 
+                        x_vec = X$x, y_vec = X$y, 
+                        dists_sph = dists_sph,
+                        Dmat = tmp_mat)
+  } else if (inherits(X, "pp3")) {
+    K <- engine_K3d_sph(r = r_vec, s = s_vec, 
+                        x_vec = X$data$x, y_vec = X$data$y, z_vec = X$data$z, 
+                        dists_sph = dists_sph,
+                        Dmat = tmp_mat)
+  }
+  out$K_trans <- K / win_area_sph
   
   return(out)
 }

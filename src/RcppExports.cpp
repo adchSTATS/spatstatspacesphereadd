@@ -5,18 +5,19 @@
 
 using namespace Rcpp;
 
-// engine_K
-NumericMatrix engine_K(NumericVector r, NumericVector s, NumericMatrix dists_3d, NumericMatrix dists_sph, NumericMatrix Dmat);
-RcppExport SEXP _spatstatspacesphereadd_engine_K(SEXP rSEXP, SEXP sSEXP, SEXP dists_3dSEXP, SEXP dists_sphSEXP, SEXP DmatSEXP) {
+// engine_K2d_sph
+NumericMatrix engine_K2d_sph(NumericVector r, NumericVector s, NumericVector x_vec, NumericVector y_vec, NumericMatrix dists_sph, NumericMatrix Dmat);
+RcppExport SEXP _spatstatspacesphereadd_engine_K2d_sph(SEXP rSEXP, SEXP sSEXP, SEXP x_vecSEXP, SEXP y_vecSEXP, SEXP dists_sphSEXP, SEXP DmatSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type r(rSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type s(sSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type dists_3d(dists_3dSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type x_vec(x_vecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y_vec(y_vecSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type dists_sph(dists_sphSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type Dmat(DmatSEXP);
-    rcpp_result_gen = Rcpp::wrap(engine_K(r, s, dists_3d, dists_sph, Dmat));
+    rcpp_result_gen = Rcpp::wrap(engine_K2d_sph(r, s, x_vec, y_vec, dists_sph, Dmat));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -39,7 +40,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_spatstatspacesphereadd_engine_K", (DL_FUNC) &_spatstatspacesphereadd_engine_K, 5},
+    {"_spatstatspacesphereadd_engine_K2d_sph", (DL_FUNC) &_spatstatspacesphereadd_engine_K2d_sph, 6},
     {"_spatstatspacesphereadd_engine_K3d_sph", (DL_FUNC) &_spatstatspacesphereadd_engine_K3d_sph, 7},
     {NULL, NULL, 0}
 };

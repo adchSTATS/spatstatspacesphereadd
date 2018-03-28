@@ -3,7 +3,7 @@
 #' Estimates the space-sphere K-function from a point pattern with points in \code{R^3 x S^2}
 #' in a window of arbitry shape in space and on the entire sphere.
 #' @param X Point pattern of class \code{\link{pp3}}.
-#' @param Y Point pattern of class \code{\link{pps}}.
+#' @param Y Point pattern of class \code{\link{ppc}} or \code{\link{pps}}.
 #' @param r Optional. Vector of values for the argument r at which K(r, s) should be evaluated.
 #' @param s Optional. Vector of values for the argument s at which K(r, s) should be evaluated.
 #' @param rmax Optional. Maximum desired value of the argument r.
@@ -28,13 +28,14 @@
 #' @return A list containing \code{r}, \code{s}, \code{theo}, and \code{K3dsph}.
 #' \code{theo} is the theoretical space-sphere K-function under Stationary Poisson.
 #' \code{theo} and \code{K3dsph} are matrices with \code{length(r)} rows and \code{length(s)} columns.
-#' @import spatstat spherstat spatstatsphadd spatstat3dadd
+#' @example /inst/Examples/spacesphereKfunction.R
+#' @import spatstat spherstat spatstatsphadd spatstat3dadd spatstatciradd
 #' @export
-K3dsph <- function(X, Y,
-                   r = NULL, s = NULL, rmax = NULL, smax = NULL, nrval = 128, nsval = nrval,
-                   intenssX = NULL, intenssY = NULL, parmsX, parmsY) {
+K3dsph2 <- function(X, Y,
+                    r = NULL, s = NULL, rmax = NULL, smax = NULL, nrval = 128, nsval = nrval,
+                    intenssX = NULL, intenssY = NULL, parmsX, parmsY) {
   stopifnot(inherits(X, "pp3"))
-  stopifnot(inherits(Y, "pps"))
+  stopifnot(inherits(Y, "pps") || inherits(Y, "ppc"))
   stopifnot(npoints(X) == npoints(Y))
   
   if (is.null(r)) {
@@ -56,14 +57,29 @@ K3dsph <- function(X, Y,
     s_vec <- s
   }
   
-  out <- list(r = r_vec,
-              s = s_vec,
-              theo = outer(r_vec, s_vec, function(r, s) r^3 * pi^3 / (gamma(5/2) * gamma(3/2)) * (1 - cos(s))))
-  
-  dists_sph <- pairdistsph(pps2sp2(Y))
+  if (inherits(Y, "ppc")) {
+    out <- list(r = r_vec,
+                s = s_vec,
+                theo = outer(r_vec, s_vec, function(r, s) {
+                  r^3 * pi^(5/2) / (gamma(5/2) * gamma(1)) * (2 * s / pi)
+                }))
+    
+    angs <- Y$data$angs
+    dists_tmp <- abs(outer(X = angs, Y = angs, FUN = "-"))
+    dists_sph <- ifelse(dists_tmp > pi, 2 * pi - dists_tmp, dists_tmp)
+    
+    win_area_sph <- 2 * pi
+  } else if (inherits(Y, "pps")) {
+    out <- list(r = r_vec,
+                s = s_vec,
+                theo = outer(r_vec, s_vec, function(r, s) r^3 * pi^3 / (gamma(5/2) * gamma(3/2)) * (1 - cos(s))))
+    
+    dists_sph <- pairdistsph(pps2sp2(Y))
+    
+    win_area_sph <- 4 * pi
+  }
   
   edge_factors_3d <- edge.Trans.pp3(X)
-  win_area_sph <- 4 * pi
   np <- npoints(X)
   
   intenssX_mat <- switch(class(intenssX),
